@@ -5,11 +5,12 @@
  */
 package neuralnetwork;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
+// import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Scanner; // Import the Scanner class to read text files
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -22,7 +23,8 @@ public class NeuralNetwork {
      */
     static ArrayList<ArrayList> Xs = new ArrayList<>();
     static ArrayList<ArrayList> Ys = new ArrayList<>();
-    static int numberofinputs, numberofhidden, numberofoutputs;
+    static ArrayList<Double> weights = new ArrayList<>();
+    static int numberofinputs, numberofhidden, numberofoutputs,numberofweights;
 
     public static void read_from_file(String filename) {
         try {
@@ -70,8 +72,17 @@ public class NeuralNetwork {
 
     }
 
+    public static void  weights_initialization(){
+           numberofweights = numberofinputs * numberofhidden + numberofhidden * numberofoutputs;
+           Double range = (double) (1.0 / numberofweights);
+           for(int i=0; i<numberofweights; i++){
+                weights.add(Math.random() * (range +range) - range);
+           }
+    }
+
     public static void main(String[] args) {
         read_from_file("input_3.txt");
+        weights_initialization();
     }
 
 }
