@@ -23,7 +23,7 @@ public class NeuralNetwork {
      */
     static ArrayList<ArrayList> Xs = new ArrayList<>();
     static ArrayList<ArrayList> Ys = new ArrayList<>();
-    static ArrayList<Double> weights = new ArrayList<>();
+    static ArrayList<ArrayList> weights = new ArrayList<>();
     static int numberofinputs, numberofhidden, numberofoutputs,numberofweights;
 
     public static void read_from_file(String filename) {
@@ -74,10 +74,19 @@ public class NeuralNetwork {
 
     public static void  weights_initialization(){
            numberofweights = numberofinputs * numberofhidden + numberofhidden * numberofoutputs;
+           ArrayList<Double> first_layer = new ArrayList<>();
+           ArrayList<Double> second_layer= new ArrayList<>();
            Double range = (double) (1.0 / numberofweights);
-           for(int i=0; i<numberofweights; i++){
-                weights.add(Math.random() * (range +range) - range);
-           }
+            for (int j = 0; j < numberofinputs * numberofhidden; j++) {
+                first_layer.add(Math.random() * (range +range) - range);
+            }
+            for (int j = 0; j <  numberofhidden * numberofoutputs; j++) {
+                second_layer.add(Math.random() * (range +range) - range);
+            }
+            weights.add(first_layer);
+            weights.add(second_layer);
+           System.out.println(weights);
+           
     }
 
     public static void main(String[] args) {
