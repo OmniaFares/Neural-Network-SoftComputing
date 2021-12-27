@@ -154,8 +154,6 @@ public class NeuralNetwork {
         read_from_file("input_3.txt");
         Normalization();
         
-       
-        
     }
     
 }
