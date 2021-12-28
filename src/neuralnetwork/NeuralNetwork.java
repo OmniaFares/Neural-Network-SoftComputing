@@ -5,13 +5,16 @@
  */
 package neuralnetwork;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
+// import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Scanner; // Import the Scanner class to read text files
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Collections;
+
+import java.util.Random;
 
 /**
  *
@@ -22,21 +25,25 @@ public class NeuralNetwork {
     /**
      * @param args the command line arguments
      */
+    static ArrayList<ArrayList> Xs = new ArrayList<>();
+    static ArrayList<ArrayList> Ys = new ArrayList<>();
+
+    static int numberofinputs, numberofhidden, numberofoutputs, numberofTrainingExamples, numberofweights;
+
+    static ArrayList<ArrayList> weights = new ArrayList<>();
+
     static public class record {
-        
+
         ArrayList<Double> X = new ArrayList<>();
         ArrayList<Double> Y = new ArrayList<>();
-        
+
         public record(ArrayList x, ArrayList y) {
             X = x;
             Y = y;
         }
-        
+
     }
-    static ArrayList<ArrayList> Xs = new ArrayList<>();
-    static ArrayList<ArrayList> Ys = new ArrayList<>();
-    static int numberofinputs, numberofhidden, numberofoutputs, numberofTrainingExamples;
-    
+
     public static void read_from_file(String filename) {
         try {
             File myObj = new File(filename);
@@ -44,7 +51,7 @@ public class NeuralNetwork {
             numberofinputs = myReader.nextInt();
             numberofhidden = myReader.nextInt();
             numberofoutputs = myReader.nextInt();
-            
+
             numberofTrainingExamples = myReader.nextInt();
             for (int i = 0; i < numberofTrainingExamples; i++) {
                 ArrayList<Double> X = new ArrayList<>();
@@ -75,15 +82,15 @@ public class NeuralNetwork {
                 }
             }
              */
-            
+
             myReader.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        
+
     }
-    
+
     public static void Normalization() {
         ArrayList<ArrayList> newxs = new ArrayList<>();
         ArrayList<Double> means = new ArrayList<>(Arrays.asList(new Double[numberofinputs]));
@@ -101,59 +108,65 @@ public class NeuralNetwork {
                 } else {
                     means.add(j, (value + sumTillNow));
                 }
-                
+
             }
-            
+
         }
         for (int i = 0; i < numberofTrainingExamples; i++) {
             for (int j = 0; j < numberofinputs; j++) {
-                
+
                 Double mean = means.get(j);
                 value = (Double) Xs.get(i).get(j);
                 sdTillNow = Sd.get(j);
-                
+
                 Sd.remove(j);
                 if (i == numberofTrainingExamples - 1) {
                     Double Val = (value - mean) * (value - mean) + sdTillNow;
                     Val = Val / numberofTrainingExamples;
                     Sd.add(j, Math.sqrt(Val));
                 } else {
-                    
+
                     Sd.add(j, (Double) ((value - mean) * (value - mean)) + sdTillNow);
                 }
-                
+
             }
-            
+
         }
-       /* System.out.println("mean");
-        for(int i=0; i<means.size(); i++)
-        {
-            System.out.println(means.get(i));
-        }
-        System.out.println("Sd");
-        for(int i=0; i<Sd.size(); i++)
-        {
-            System.out.println(Sd.get(i));
-        }
-        */
         for (int i = 0; i < numberofTrainingExamples; i++) {
             ArrayList<Double> newx = new ArrayList<>();
             for (int j = 0; j < numberofinputs; j++) {
                 Double new_x = (((Double) Xs.get(i).get(j) - means.get(j)) / Sd.get(j));
                 newx.add(new_x);
-                
+
             }
             newxs.add(newx);
         }
-        
+
         Xs = newxs;
-        
+
     }
-    
+
+    public static void weights_initialization() {
+        numberofweights = numberofinputs * numberofhidden + numberofhidden * numberofoutputs;
+        ArrayList<Double> first_layer = new ArrayList<>();
+        ArrayList<Double> second_layer = new ArrayList<>();
+        Double range = (double) (1.0 / numberofweights);
+        for (int j = 0; j < numberofinputs * numberofhidden; j++) {
+            first_layer.add(Math.random() * (range + range) - range);
+        }
+        for (int j = 0; j < numberofhidden * numberofoutputs; j++) {
+            second_layer.add(Math.random() * (range + range) - range);
+        }
+        weights.add(first_layer);
+        weights.add(second_layer);
+        System.out.println(weights);
+
+    }
+
     public static void main(String[] args) {
         read_from_file("input_3.txt");
         Normalization();
-        
+        weights_initialization();
+
     }
-    
 }
