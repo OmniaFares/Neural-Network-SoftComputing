@@ -65,24 +65,6 @@ public class NeuralNetwork {
                 Xs.add(X);
                 Ys.add(Y);
             }
-            /*     System.out.println("number of inputs "+numberofinputs);
-            System.out.println("number of hidden "+numberofhidden);
-            System.out.println("number of outputs "+numberofoutputs);
-            System.out.println("number of training Examples "+numberofTrainingExamples);
-            System.out.println("X's and their Y's");
-            for(int i=0; i<numberofTrainingExamples; i++)
-            {
-                for(int j=0; j<numberofinputs; j++)
-                {
-                    System.out.print("X "+Xs.get(i).get(j)+"     ");
-                }
-                 for(int j=0; j<numberofoutputs; j++)
-                {
-                    System.out.print("y "+Ys.get(i).get(j)+"     ");
-                }
-            }
-             */
-
             myReader.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
@@ -143,6 +125,7 @@ public class NeuralNetwork {
         }
 
         Xs = newxs;
+        System.out.println("Xs"+Xs);
 
     }
 
@@ -163,10 +146,61 @@ public class NeuralNetwork {
 
     }
 
+    public static ArrayList<ArrayList> FeedForward(int numOfCurrentTrainingExample) {
+        ArrayList<Double> Outputs_Out = new ArrayList<>();
+        ArrayList<Double> Hidden_Out = new ArrayList<>();
+        ArrayList<ArrayList> AllOfTheAbove = new ArrayList<>();   //just for return 
+        for (int i = 0; i < numberofhidden; i++) {
+            Double H_i_in = 0.0;
+            for (int j = 0; j < numberofinputs; j++) {
+                H_i_in += (Double) (weights.get(0).get(j)) * ((Double) Xs.get(numOfCurrentTrainingExample).get(j));
+            }
+            Double Exp = Math.exp(-H_i_in);
+            Double H_i_out = (1 / (1 + Exp));
+            Hidden_Out.add(H_i_out);
+        }
+
+        for (int i = 0; i < numberofoutputs; i++) {
+            Double Y_i_in = 0.0;
+            for (int j = 0; j < numberofhidden; j++) {
+                Y_i_in += (Double) (weights.get(1).get(j)) * ((Double) Ys.get(numOfCurrentTrainingExample).get(j));
+            }
+            Double Exp = Math.exp(-Y_i_in);
+            Double Y_i_out = (1 / (1 + Exp));
+            Outputs_Out.add(Y_i_out);
+        }
+        AllOfTheAbove.add(Hidden_Out);
+        AllOfTheAbove.add(Outputs_Out);
+
+        return AllOfTheAbove;
+
+    }
+
     public static void main(String[] args) {
+
+        ArrayList<ArrayList> Outputs_AllEx = new ArrayList<>();
+        ArrayList<ArrayList> Hiddens_AllEx = new ArrayList<>();
         read_from_file("input_3.txt");
         Normalization();
         weights_initialization();
+
+        for (int j = 0; j < numberofTrainingExamples; j++) {
+            ArrayList<ArrayList> Outputs_OneEx = new ArrayList<>();
+            ArrayList<ArrayList> Hiddens_OneEx = new ArrayList<>();
+            ArrayList<ArrayList> Both_Hidden_Out = new ArrayList<>();
+            Both_Hidden_Out = FeedForward(j);
+            Outputs_OneEx.add(Both_Hidden_Out.get(1));
+            Outputs_AllEx.add(Both_Hidden_Out.get(1));
+
+            Hiddens_OneEx.add(Both_Hidden_Out.get(0));
+            Hiddens_AllEx.add(Both_Hidden_Out.get(0));
+
+            System.out.println("Training Example number " + (j + 1));
+            System.out.println("Hidden outs " + Hiddens_OneEx);
+            System.out.println("Y outs " + Outputs_OneEx);
+            System.out.println("###############################");
+
+        }
 
     }
 }
