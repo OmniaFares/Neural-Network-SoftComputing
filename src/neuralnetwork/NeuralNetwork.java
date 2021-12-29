@@ -33,18 +33,6 @@ public class NeuralNetwork {
     static ArrayList<ArrayList> output_weights = new ArrayList<>();
     static ArrayList<ArrayList> hidden_weights = new ArrayList<>();
 
-    static public class record {
-
-        ArrayList<Double> X = new ArrayList<>();
-        ArrayList<Double> Y = new ArrayList<>();
-
-        public record(ArrayList x, ArrayList y) {
-            X = x;
-            Y = y;
-        }
-
-    }
-
     public static void read_from_file(String filename) {
         try {
             File myObj = new File(filename);
@@ -120,8 +108,6 @@ public class NeuralNetwork {
         }
 
         Xs = newxs;
-      //  System.out.println("Xs"+Xs);
-
     }
 
     public static void weights_initialization() {
@@ -179,7 +165,6 @@ public class NeuralNetwork {
             double error = out * (1 - out) * (target - out);
             Output_Errors.add(error);
         }
-        // System.out.println("Outputs_Errors " + Output_Errors);
         ArrayList<Double> Hidden_Errors = new ArrayList<>();
         for(int i=0; i<numberofhidden; i++){
             double out  = Hiddens_Out.get(i);
@@ -190,7 +175,6 @@ public class NeuralNetwork {
             double error = out * (1 - out) * sum;
             Hidden_Errors.add(error);
         }
-        // System.out.println("Hidden_Errors " + Hidden_Errors);
         update_weights(Hidden_Errors, Output_Errors,Hiddens_Out, Outputs_Out);
     }
 
@@ -235,15 +219,8 @@ public class NeuralNetwork {
                 Outputs_OneEx = Both_Hidden_Out.get(1);
                 Outputs_AllEx.add(Both_Hidden_Out.get(1));
                 Hiddens_OneEx = Both_Hidden_Out.get(0);
-                // System.out.println("Training Example number " + (j + 1));
-                // System.out.println("Hidden outs " + Hiddens_OneEx);
-                // System.out.println("Y outs " + Outputs_OneEx);
                 back_propagation(j, Hiddens_OneEx,Outputs_OneEx);
-                // System.out.println(hidden_weights + "***" + output_weights);
-                // System.out.println("###############################");
             }
-            // System.out.println("Y predicted " + Outputs_AllEx);
-            // System.out.println("Y actual " + Ys);
             ArrayList<Double> sumError = new ArrayList<>();
             for(int i=0; i<Ys.size(); i++){
                 double sum = 0.0;
