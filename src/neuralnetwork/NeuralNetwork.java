@@ -224,6 +224,7 @@ public class NeuralNetwork {
         read_from_file("train.txt");
         Normalization();
         weights_initialization();
+        double MSE = 0.0;
         for (int iter=0; iter < 500; iter++){
             ArrayList<ArrayList> Outputs_AllEx = new ArrayList<>();
             for (int j = 0; j < numberofTrainingExamples; j++) {
@@ -257,9 +258,8 @@ public class NeuralNetwork {
             for(int i=0; i<sumError.size(); i++){
                 sum += sumError.get(i);
             }
-            System.out.println("MSE in iteration " + iter + " = " + sum/numberofTrainingExamples);
+            MSE =  sum/numberofTrainingExamples;
         }
-        
-
+        System.out.println("MSE = " + MSE);
     }
 }
