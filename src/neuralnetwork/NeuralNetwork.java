@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import java.util.Random;
 
 /**
  *
@@ -30,7 +29,8 @@ public class NeuralNetwork {
 
     static int numberofinputs, numberofhidden, numberofoutputs, numberofTrainingExamples, numberofweights;
 
-    static ArrayList<ArrayList> weights = new ArrayList<>();
+    static ArrayList<ArrayList> output_weights = new ArrayList<>();
+    static ArrayList<ArrayList> hidden_weights = new ArrayList<>();
 
     static public class record {
 
@@ -131,18 +131,22 @@ public class NeuralNetwork {
 
     public static void weights_initialization() {
         numberofweights = numberofinputs * numberofhidden + numberofhidden * numberofoutputs;
-        ArrayList<Double> first_layer = new ArrayList<>();
-        ArrayList<Double> second_layer = new ArrayList<>();
         Double range = (double) (1.0 / numberofweights);
-        for (int j = 0; j < numberofinputs * numberofhidden; j++) {
-            first_layer.add(Math.random() * (range + range) - range);
+        for (int j = 0; j < numberofhidden; j++) {
+            ArrayList<Double> neuron = new ArrayList<>();
+            for (int i = 0; i < numberofinputs; i++) {
+                neuron.add(Math.random() * (range + range) - range);
+            }
+            hidden_weights.add(neuron);
         }
-        for (int j = 0; j < numberofhidden * numberofoutputs; j++) {
-            second_layer.add(Math.random() * (range + range) - range);
+        for (int j = 0; j < numberofoutputs; j++) {
+            ArrayList<Double> neuron = new ArrayList<>();
+            for (int i = 0; i < numberofhidden; i++) {
+                neuron.add(Math.random() * (range + range) - range);
+            }
+            output_weights.add(neuron);
         }
-        weights.add(first_layer);
-        weights.add(second_layer);
-        System.out.println(weights);
+        System.out.println(hidden_weights + " *** " + output_weights);
 
     }
 
@@ -153,7 +157,7 @@ public class NeuralNetwork {
         for (int i = 0; i < numberofhidden; i++) {
             Double H_i_in = 0.0;
             for (int j = 0; j < numberofinputs; j++) {
-                H_i_in += (Double) (weights.get(0).get(j)) * ((Double) Xs.get(numOfCurrentTrainingExample).get(j));
+                H_i_in += (Double) (hidden_weights.get(i).get(j)) * ((Double) Xs.get(numOfCurrentTrainingExample).get(j));
             }
             Double Exp = Math.exp(-H_i_in);
             Double H_i_out = (1 / (1 + Exp));
@@ -163,7 +167,7 @@ public class NeuralNetwork {
         for (int i = 0; i < numberofoutputs; i++) {
             Double Y_i_in = 0.0;
             for (int j = 0; j < numberofhidden; j++) {
-                Y_i_in += (Double) (weights.get(1).get(j)) * ((Double) Ys.get(numOfCurrentTrainingExample).get(j));
+                Y_i_in += (Double) (output_weights.get(i).get(j)) * ((Double) Hidden_Out.get(j));
             }
             Double Exp = Math.exp(-Y_i_in);
             Double Y_i_out = (1 / (1 + Exp));
