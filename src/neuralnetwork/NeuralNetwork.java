@@ -241,8 +241,11 @@ public class NeuralNetwork {
                 back_propagation(j, Hiddens_OneEx,Outputs_OneEx);
             }
             MSE = calc_MSE(Outputs_AllEx);
+            if(iter == 1){
+                System.out.println("Training MSE at first iteration = " + MSE);
+            }
         }
-        System.out.println("Training MSE = " + MSE);
+        System.out.println("Training MSE at last iteration = " + MSE);
    }
 
     public static void write_weights_to_file(){
@@ -263,7 +266,7 @@ public class NeuralNetwork {
     }
 
     public static void second_program(){
-        read_from_file("input.txt");
+        read_from_file("train.txt");
         if(numberofTrainingExamples > 1){
             Normalization();
         }
