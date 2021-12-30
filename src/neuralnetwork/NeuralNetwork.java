@@ -26,12 +26,11 @@ public class NeuralNetwork {
      */
     static ArrayList<ArrayList> Xs = new ArrayList<>();
     static ArrayList<ArrayList> Ys = new ArrayList<>();
+    static ArrayList<ArrayList> output_weights = new ArrayList<>();
+    static ArrayList<ArrayList> hidden_weights = new ArrayList<>();
 
     static int numberofinputs, numberofhidden, numberofoutputs, numberofTrainingExamples, numberofweights;
     static double alpha = 0.5;
-
-    static ArrayList<ArrayList> output_weights = new ArrayList<>();
-    static ArrayList<ArrayList> hidden_weights = new ArrayList<>();
 
     public static void read_from_file(String filename) {
         try {
@@ -40,7 +39,6 @@ public class NeuralNetwork {
             numberofinputs = myReader.nextInt();
             numberofhidden = myReader.nextInt();
             numberofoutputs = myReader.nextInt();
-
             numberofTrainingExamples = myReader.nextInt();
             for (int i = 0; i < numberofTrainingExamples; i++) {
                 ArrayList<Double> X = new ArrayList<>();
@@ -59,7 +57,6 @@ public class NeuralNetwork {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-
     }
 
     public static void Normalization() {
@@ -83,7 +80,6 @@ public class NeuralNetwork {
         }
         for (int i = 0; i < numberofTrainingExamples; i++) {
             for (int j = 0; j < numberofinputs; j++) {
-
                 Double mean = means.get(j);
                 value = (Double) Xs.get(i).get(j);
                 sdTillNow = Sd.get(j);
@@ -102,11 +98,9 @@ public class NeuralNetwork {
             for (int j = 0; j < numberofinputs; j++) {
                 Double new_x = (((Double) Xs.get(i).get(j) - means.get(j)) / Sd.get(j));
                 newx.add(new_x);
-
             }
             newxs.add(newx);
         }
-
         Xs = newxs;
     }
 
@@ -204,9 +198,33 @@ public class NeuralNetwork {
         hidden_weights.clear();
         hidden_weights = new_hidden_weights;
     }
-    public static void main(String[] args) {
+   
+    public static double calc_MSE(ArrayList<ArrayList> Outputs_AllEx){
+        double MSE = 0.0;
+        ArrayList<Double> sumError = new ArrayList<>();
+        for(int i=0; i<Ys.size(); i++){
+                double sum = 0.0;
+                for(int j=0; j<Ys.get(i).size(); j++){
+                        double diff = (Double) Ys.get(i).get(j) - (Double) Outputs_AllEx.get(i).get(j);
+                        double sq = Math.pow(diff, 2) ;
+                        sum += sq;
+                }
+                sumError.add(0.5*sum);
+        }
+        double sum = 0.0;
+        for(int i=0; i<sumError.size(); i++){
+                sum += sumError.get(i);
+        }
+        MSE =  sum/numberofTrainingExamples;
+
+        return MSE;
+    }
+  
+    public static void first_program(){
         read_from_file("train.txt");
-        Normalization();
+        if(numberofTrainingExamples > 1){
+            Normalization();
+        }
         weights_initialization();
         double MSE = 0.0;
         for (int iter=0; iter < 500; iter++){
@@ -221,22 +239,31 @@ public class NeuralNetwork {
                 Hiddens_OneEx = Both_Hidden_Out.get(0);
                 back_propagation(j, Hiddens_OneEx,Outputs_OneEx);
             }
-            ArrayList<Double> sumError = new ArrayList<>();
-            for(int i=0; i<Ys.size(); i++){
-                double sum = 0.0;
-                    for(int j=0; j<Ys.get(i).size(); j++){
-                        double diff = (Double) Ys.get(i).get(j) - (Double) Outputs_AllEx.get(i).get(j);
-                        double sq = Math.pow(diff, 2) ;
-                        sum += sq;
-                    }
-                    sumError.add(0.5*sum);
-            }
-            double sum = 0.0;
-            for(int i=0; i<sumError.size(); i++){
-                sum += sumError.get(i);
-            }
-            MSE =  sum/numberofTrainingExamples;
+            MSE = calc_MSE(Outputs_AllEx);
         }
-        System.out.println("MSE = " + MSE);
+        System.out.println("Training MSE = " + MSE);
+   }
+
+    public static void second_program(){
+        read_from_file("input.txt");
+        if(numberofTrainingExamples > 1){
+            Normalization();
+        }
+        ArrayList<ArrayList> Outputs_AllEx = new ArrayList<>();
+        for (int j = 0; j < numberofTrainingExamples; j++) {
+                ArrayList<ArrayList> Both_Hidden_Out = new ArrayList<>();
+                Both_Hidden_Out = FeedForward(j);
+                Outputs_AllEx.add(Both_Hidden_Out.get(1));
+        }
+        double MSE = calc_MSE(Outputs_AllEx);
+        System.out.println("Input MSE = " + MSE);
+   }
+    public static void main(String[] args) {
+        System.out.println("First Program : ");
+        first_program();
+        Xs.clear();
+        Ys.clear();
+        System.out.println("Second Program : ");
+        second_program();
     }
 }
