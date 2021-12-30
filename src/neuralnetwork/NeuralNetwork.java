@@ -8,6 +8,7 @@ package neuralnetwork;
 
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
+import java.io.PrintWriter;
 import java.util.Scanner; // Import the Scanner class to read text files
 import java.util.ArrayList;
 
@@ -244,6 +245,23 @@ public class NeuralNetwork {
         System.out.println("Training MSE = " + MSE);
    }
 
+    public static void write_weights_to_file(){
+        File f = new File("weights.txt");
+        try (PrintWriter pw = new PrintWriter(f)) {
+                pw.println("Output Weights : ");
+                for(int i=0; i<output_weights.size(); i++){
+                    pw.println(output_weights.get(i));
+                }
+                pw.println();
+                pw.println("Hidden Weights : ");
+                for(int i=0; i<hidden_weights.size(); i++){
+                    pw.println(hidden_weights.get(i));
+                }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void second_program(){
         read_from_file("input.txt");
         if(numberofTrainingExamples > 1){
@@ -261,6 +279,7 @@ public class NeuralNetwork {
     public static void main(String[] args) {
         System.out.println("First Program : ");
         first_program();
+        write_weights_to_file();
         Xs.clear();
         Ys.clear();
         System.out.println("Second Program : ");
