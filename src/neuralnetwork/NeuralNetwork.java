@@ -60,16 +60,16 @@ public class NeuralNetwork {
         }
     }
 
-    public static void Normalization() {
-        ArrayList<ArrayList> newxs = new ArrayList<>();
+    public static ArrayList <ArrayList> Normalization(ArrayList <ArrayList> list , int size) {
+        ArrayList<ArrayList> newlist = new ArrayList<>();
         ArrayList<Double> means = new ArrayList<>(Arrays.asList(new Double[numberofinputs]));
         ArrayList<Double> Sd = new ArrayList<>(Arrays.asList(new Double[numberofinputs]));
         Collections.fill(means, 0.0);
         Collections.fill(Sd, 0.0);
         Double value = 0.0, sumTillNow = 0.0, sdTillNow = 0.0;
         for (int i = 0; i < numberofTrainingExamples; i++) {
-            for (int j = 0; j < numberofinputs; j++) {
-                value = (Double) Xs.get(i).get(j);
+            for (int j = 0; j < size; j++) {
+                value = (Double) list.get(i).get(j);
                 sumTillNow = means.get(j);
                 means.remove(j);
                 if (i == numberofTrainingExamples - 1) {
@@ -80,9 +80,9 @@ public class NeuralNetwork {
             }
         }
         for (int i = 0; i < numberofTrainingExamples; i++) {
-            for (int j = 0; j < numberofinputs; j++) {
+            for (int j = 0; j < size; j++) {
                 Double mean = means.get(j);
-                value = (Double) Xs.get(i).get(j);
+                value = (Double) list.get(i).get(j);
                 sdTillNow = Sd.get(j);
                 Sd.remove(j);
                 if (i == numberofTrainingExamples - 1) {
@@ -95,14 +95,14 @@ public class NeuralNetwork {
             }
         }
         for (int i = 0; i < numberofTrainingExamples; i++) {
-            ArrayList<Double> newx = new ArrayList<>();
-            for (int j = 0; j < numberofinputs; j++) {
-                Double new_x = (((Double) Xs.get(i).get(j) - means.get(j)) / Sd.get(j));
-                newx.add(new_x);
+            ArrayList<Double> new_list = new ArrayList<>();
+            for (int j = 0; j < size; j++) {
+                Double neww_val = (((Double) list.get(i).get(j) - means.get(j)) / Sd.get(j));
+                new_list .add(neww_val);
             }
-            newxs.add(newx);
+            newlist.add(new_list);
         }
-        Xs = newxs;
+        return newlist;
     }
 
     public static void weights_initialization() {
@@ -224,8 +224,9 @@ public class NeuralNetwork {
     public static void first_program(){
         read_from_file("train.txt");
         if(numberofTrainingExamples > 1){
-            Normalization();
+            Xs=Normalization(Xs,numberofinputs);
         }
+        Ys = Normalization(Ys, numberofoutputs);
         weights_initialization();
         double MSE = 0.0;
         for (int iter=0; iter < 500; iter++){
@@ -268,8 +269,9 @@ public class NeuralNetwork {
     public static void second_program(){
         read_from_file("train.txt");
         if(numberofTrainingExamples > 1){
-            Normalization();
+            Xs=Normalization(Xs,numberofinputs);
         }
+       Ys = Normalization(Ys, numberofoutputs);
         ArrayList<ArrayList> Outputs_AllEx = new ArrayList<>();
         for (int j = 0; j < numberofTrainingExamples; j++) {
                 ArrayList<ArrayList> Both_Hidden_Out = new ArrayList<>();
