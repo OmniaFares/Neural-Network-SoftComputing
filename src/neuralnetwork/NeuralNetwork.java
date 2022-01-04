@@ -118,7 +118,7 @@ public class NeuralNetwork {
         for (int j = 0; j < numberofoutputs; j++) {
             ArrayList<Double> neuron = new ArrayList<>();
             for (int i = 0; i < numberofhidden; i++) {
-                neuron.add(Math.random() * (range + range) - range);
+                neuron.add(Math.random() *  (range + range) - range);
             }
             output_weights.add(neuron);
         }
@@ -170,17 +170,17 @@ public class NeuralNetwork {
             double error = out * (1 - out) * sum;
             Hidden_Errors.add(error);
         }
-        update_weights(Hidden_Errors, Output_Errors,Hiddens_Out, Outputs_Out);
+        update_weights(numOfCurrentTrainingExample,Hidden_Errors, Output_Errors,Hiddens_Out, Outputs_Out);
     }
 
-    public static void update_weights(ArrayList<Double> Hidden_Errors,ArrayList<Double> Output_Errors,  ArrayList<Double> Hiddens_Out, ArrayList<Double> Outputs_Out){
+    public static void update_weights(int numOfCurrentTrainingExample,ArrayList<Double> Hidden_Errors,ArrayList<Double> Output_Errors,  ArrayList<Double> Hiddens_Out, ArrayList<Double> Outputs_Out){
         ArrayList<ArrayList> new_output_weights = new ArrayList<>();
         ArrayList<ArrayList> new_hidden_weights = new ArrayList<>();
         for(int i=0;  i<output_weights.size(); i++){
             ArrayList<Double> neuron = new ArrayList<>();
                 for(int j=0; j<output_weights.get(i).size(); j++){
                     double old = (Double) output_weights.get(i).get(j);
-                    double neww = old + alpha * Output_Errors.get(i) * Outputs_Out.get(i) ;
+                    double neww = old + alpha * Output_Errors.get(i) * Hiddens_Out.get(j) ;
                     neuron.add(neww);
                 }
                 new_output_weights.add(neuron);
@@ -191,7 +191,7 @@ public class NeuralNetwork {
             ArrayList<Double> neuron = new ArrayList<>();
                 for(int j=0; j<hidden_weights.get(i).size(); j++){
                     double old = (Double) hidden_weights.get(i).get(j);
-                    double neww = old + alpha * Hidden_Errors.get(i) * Hiddens_Out.get(i) ;
+                    double neww = old + alpha * Hidden_Errors.get(i) * (Double)Xs.get(numOfCurrentTrainingExample).get(j) ;
                     neuron.add(neww);
                 }
                 new_hidden_weights.add(neuron);
@@ -225,8 +225,8 @@ public class NeuralNetwork {
         read_from_file("train.txt");
         if(numberofTrainingExamples > 1){
             Xs=Normalization(Xs,numberofinputs);
+            Ys = Normalization(Ys, numberofoutputs);
         }
-        Ys = Normalization(Ys, numberofoutputs);
         weights_initialization();
         double MSE = 0.0;
         for (int iter=0; iter < 500; iter++){
@@ -270,8 +270,8 @@ public class NeuralNetwork {
         read_from_file("train.txt");
         if(numberofTrainingExamples > 1){
             Xs=Normalization(Xs,numberofinputs);
+            Ys = Normalization(Ys, numberofoutputs);
         }
-       Ys = Normalization(Ys, numberofoutputs);
         ArrayList<ArrayList> Outputs_AllEx = new ArrayList<>();
         for (int j = 0; j < numberofTrainingExamples; j++) {
                 ArrayList<ArrayList> Both_Hidden_Out = new ArrayList<>();
