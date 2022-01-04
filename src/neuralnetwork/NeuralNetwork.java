@@ -25,10 +25,10 @@ public class NeuralNetwork {
     /**
      * @param args the command line arguments
      */
-    static ArrayList<ArrayList> Xs = new ArrayList<>();
-    static ArrayList<ArrayList> Ys = new ArrayList<>();
-    static ArrayList<ArrayList> output_weights = new ArrayList<>();
-    static ArrayList<ArrayList> hidden_weights = new ArrayList<>();
+    static ArrayList<ArrayList<Double>> Xs = new ArrayList<>();
+    static ArrayList<ArrayList<Double>> Ys = new ArrayList<>();
+    static ArrayList<ArrayList<Double>> output_weights = new ArrayList<>();
+    static ArrayList<ArrayList<Double>> hidden_weights = new ArrayList<>();
 
     static int numberofinputs, numberofhidden, numberofoutputs, numberofTrainingExamples, numberofweights;
     static double alpha = 0.5;
@@ -60,8 +60,8 @@ public class NeuralNetwork {
         }
     }
 
-    public static ArrayList <ArrayList> Normalization(ArrayList <ArrayList> list , int size) {
-        ArrayList<ArrayList> newlist = new ArrayList<>();
+    public static ArrayList <ArrayList<Double>> Normalization(ArrayList <ArrayList<Double>> list , int size) {
+        ArrayList<ArrayList<Double>> newlist = new ArrayList<>();
         ArrayList<Double> means = new ArrayList<>(Arrays.asList(new Double[numberofinputs]));
         ArrayList<Double> Sd = new ArrayList<>(Arrays.asList(new Double[numberofinputs]));
         Collections.fill(means, 0.0);
@@ -124,10 +124,10 @@ public class NeuralNetwork {
         }
     }
 
-    public static ArrayList<ArrayList> FeedForward(int numOfCurrentTrainingExample) {
+    public static ArrayList<ArrayList<Double>> FeedForward(int numOfCurrentTrainingExample) {
         ArrayList<Double> Outputs_Out = new ArrayList<>();
         ArrayList<Double> Hidden_Out = new ArrayList<>();
-        ArrayList<ArrayList> AllOfTheAbove = new ArrayList<>();   //just for return 
+        ArrayList<ArrayList<Double>> AllOfTheAbove = new ArrayList<>();   //just for return 
         for (int i = 0; i < numberofhidden; i++) {
             Double H_i_in = 0.0;
             for (int j = 0; j < numberofinputs; j++) {
@@ -174,8 +174,8 @@ public class NeuralNetwork {
     }
 
     public static void update_weights(int numOfCurrentTrainingExample,ArrayList<Double> Hidden_Errors,ArrayList<Double> Output_Errors,  ArrayList<Double> Hiddens_Out, ArrayList<Double> Outputs_Out){
-        ArrayList<ArrayList> new_output_weights = new ArrayList<>();
-        ArrayList<ArrayList> new_hidden_weights = new ArrayList<>();
+        ArrayList<ArrayList<Double>> new_output_weights = new ArrayList<>();
+        ArrayList<ArrayList<Double>> new_hidden_weights = new ArrayList<>();
         for(int i=0;  i<output_weights.size(); i++){
             ArrayList<Double> neuron = new ArrayList<>();
                 for(int j=0; j<output_weights.get(i).size(); j++){
@@ -200,7 +200,7 @@ public class NeuralNetwork {
         hidden_weights = new_hidden_weights;
     }
    
-    public static double calc_MSE(ArrayList<ArrayList> Outputs_AllEx){
+    public static double calc_MSE(ArrayList<ArrayList<Double>> Outputs_AllEx){
         double MSE = 0.0;
         ArrayList<Double> sumError = new ArrayList<>();
         for(int i=0; i<Ys.size(); i++){
@@ -230,11 +230,11 @@ public class NeuralNetwork {
         weights_initialization();
         double MSE = 0.0;
         for (int iter=0; iter < 500; iter++){
-            ArrayList<ArrayList> Outputs_AllEx = new ArrayList<>();
+            ArrayList<ArrayList<Double>> Outputs_AllEx = new ArrayList<>();
             for (int j = 0; j < numberofTrainingExamples; j++) {
                 ArrayList<Double> Outputs_OneEx = new ArrayList<>();
                 ArrayList<Double> Hiddens_OneEx = new ArrayList<>();
-                ArrayList<ArrayList> Both_Hidden_Out = new ArrayList<>();
+                ArrayList<ArrayList<Double>> Both_Hidden_Out = new ArrayList<>();
                 Both_Hidden_Out = FeedForward(j);
                 Outputs_OneEx = Both_Hidden_Out.get(1);
                 Outputs_AllEx.add(Both_Hidden_Out.get(1));
@@ -272,9 +272,9 @@ public class NeuralNetwork {
             Xs=Normalization(Xs,numberofinputs);
             Ys = Normalization(Ys, numberofoutputs);
         }
-        ArrayList<ArrayList> Outputs_AllEx = new ArrayList<>();
+        ArrayList<ArrayList<Double>> Outputs_AllEx = new ArrayList<>();
         for (int j = 0; j < numberofTrainingExamples; j++) {
-                ArrayList<ArrayList> Both_Hidden_Out = new ArrayList<>();
+                ArrayList<ArrayList<Double>> Both_Hidden_Out = new ArrayList<>();
                 Both_Hidden_Out = FeedForward(j);
                 Outputs_AllEx.add(Both_Hidden_Out.get(1));
         }
